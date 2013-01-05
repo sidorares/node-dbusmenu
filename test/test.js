@@ -23,8 +23,7 @@ var DbusMenuIface = {
    name: 'com.canonical.dbusmenu',
    methods: {
        GetLayout: [ 'iias', 'u(ia{sv}av)' ],
-       //GetGroupProperties: [ 'aias', 'a(ia{sv})' ]
-       GetGroupProperties: [ 's', 'a(ia{sv})' ]
+       GetGroupProperties: [ 'aias', 'a(ia{sv})']
    },
    properties: {
        IconThemePath: 'as',
@@ -34,12 +33,8 @@ var DbusMenuIface = {
    }
 };
 
-
-//bus.exportInterface(example, '/com/github/sidorares/1', exampleIface);
-
-
 var x11 = require('x11');
-x11.createClient(function(display) {
+x11.createClient(function(err, display) {
     var X = display.client;
     var wid = X.AllocID();
     X.CreateWindow(wid, display.screen[0].root, 100, 100, 400, 300);
@@ -52,8 +47,8 @@ x11.createClient(function(display) {
 
        var menus = 
        
-       menu.GetLayout = function() {
-          console.log('=========================================');
+       menu.GetLayout = function(parentId, recursionDepth, propertyNames) {
+          console.log('=========================================', parentId, recursionDepth, propertyNames);
           console.log(arguments);
           // u(ia{sv}av)
           var result = [ 0,  // u
@@ -85,7 +80,7 @@ x11.createClient(function(display) {
           return result; 
        };
        menu.GetGroupProperties = function() {
-          return ['test'];
+          //return ['test'];
 
           
    
