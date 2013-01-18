@@ -3,9 +3,19 @@ var bus = dbus.sessionBus();
 var name = 'some.name';
 bus.requestName(name, 0);
 
+var debug = false;
+if (debug) {
+var oldlog = console.log;
+console.log = function(a, b, c, d, e, f)
+{
+    console.trace();
+    oldlog(a,b,c,d,e);
+}
+
 bus.connection.on('message', function(msg) {
    console.log(msg);
 });
+}
 
 
 /*
@@ -33,12 +43,13 @@ var DbusMenuIface = {
    }
 };
 
-var x11 = require('x11');
-x11.createClient(function(err, display) {
-    var X = display.client;
-    var wid = X.AllocID();
-    X.CreateWindow(wid, display.screen[0].root, 100, 100, 400, 300);
-    X.MapWindow(wid);
+//var x11 = require('x11');
+//x11.createClient(function(err, display) {
+//    var X = display.client;
+//    var wid = X.AllocID();
+//    X.CreateWindow(wid, display.screen[0].root, 100, 100, 400, 300);
+//    X.MapWindow(wid);
+    var wid = 0x440000a;
     var appmenu = bus.getService('com.canonical.AppMenu.Registrar');
     appmenu.getInterface('/com/canonical/AppMenu/Registrar', 'com.canonical.AppMenu.Registrar', function(err, registrar) {
        console.log(registrar);
@@ -129,5 +140,6 @@ x11.createClient(function(err, display) {
        bus.exportInterface(menu,  menuObjPath, DbusMenuIface);
        registrar.RegisterWindow(wid, menuObjPath, function() {});
     });
-    X.on('error', function(err) { console.log(err) });
-});
+
+//    X.on('error', function(err) { console.log(err) });
+//});
